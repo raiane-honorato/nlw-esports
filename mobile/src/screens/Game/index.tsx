@@ -6,16 +6,19 @@ import { Entypo } from '@expo/vector-icons';
 
 import logoImg from '../../assets/logo-nlw-esports.png';
 
-import { Background } from '../../components/Background';
-
-import { styles } from './styles';
-import { GameParams } from '../../@types/navigation';
 import { THEME } from '../../theme';
+import { styles } from './styles';
+
+import { GameParams } from '../../@types/navigation';
+
 import { Header } from '../../components/Header';
+import { Background } from '../../components/Background';
 import { DuoCard, DuoCardProps } from '../../components/DuoCard';
+import { DuoMatch } from '../../components/DuoMatch';
 
 export function Game() {
   const [duos, setDuos] = useState<DuoCardProps[]>([]);
+  const [discordDuoSelected, setDiscordDuoSelected] = useState<string>('');
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -30,6 +33,12 @@ export function Game() {
     .then(res => res.json())
     .then(data => setDuos(data))
   }, []);
+
+  function getDiscordUser(adsId: string) {
+    fetch(`http://192.168.100.16:3333/ads/${adsId}/discord`)
+    .then(res => res.json())
+    .then(data => setDiscordDuoSelected(data.discord))
+  }
 
   return (
     <Background>
@@ -67,7 +76,7 @@ export function Game() {
           renderItem={({ item }) => (
             <DuoCard
               data={item}
-              onConnect={() => {}}
+              onConnect={() => {getDiscordUser(item.id)}}
             />
           )}
           horizontal
@@ -77,6 +86,12 @@ export function Game() {
               Não há anúncios publicados ainda.
             </Text>
           )}
+        />
+
+        <DuoMatch
+          visible={discordDuoSelected.length > 0}
+          discord={discordDuoSelected}
+          onClose={() => setDiscordDuoSelected('')}
         />
       </SafeAreaView>
     </Background>
