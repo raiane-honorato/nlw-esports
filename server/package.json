@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/server.mjs",
   "scripts": {
-    "build": "tsc",
+    "build": "npx tsc",
+    "start": "node build/server.js",
     "dev": "ts-node-dev --exit-child src/server.ts"
   },
   "keywords": [],
